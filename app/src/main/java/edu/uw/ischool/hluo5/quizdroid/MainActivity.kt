@@ -22,15 +22,15 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        // 初始化话题列表数据
+
         val topics = listOf("Math", "Physics", "Marvel Super Heroes")
         val listView = findViewById<ListView>(R.id.topic_list_view)
 
-        // 使用 ArrayAdapter 显示话题列表
+
         val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, topics)
         listView.adapter = adapter
 
-        // 为每个话题项添加点击事件，跳转到 TopicOverviewActivity
+
         listView.setOnItemClickListener { _, _, position, _ ->
             val topic = topics[position]
             Log.d("MainActivity", "Selected topic: $topic")

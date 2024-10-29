@@ -57,7 +57,7 @@ class QuestionActivity : AppCompatActivity() {
             val selectedAnswerId = radioGroup.checkedRadioButtonId
             val selectedAnswer = findViewById<RadioButton>(selectedAnswerId).text.toString()
 
-            // 将答案和其他数据传递到AnswerActivity
+
             val intent = Intent(this, AnswerActivity::class.java)
             intent.putExtra("selectedAnswer", selectedAnswer)
             intent.putExtra("correctAnswer", correctAnswer)
@@ -67,7 +67,7 @@ class QuestionActivity : AppCompatActivity() {
             intent.putExtra("topic", topic)
             startActivity(intent)
 
-            finish()  // 结束当前活动
+            finish()
         }
     }
 
@@ -85,7 +85,6 @@ class QuestionActivity : AppCompatActivity() {
 
         questionText.text = question
 
-        // 将正确答案和错误答案混合后分配到选项按钮
         val allOptions = (incorrectOptions + answer).shuffled()
         options.forEachIndexed { index, radioButton ->
             radioButton.text = allOptions[index]

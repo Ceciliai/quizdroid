@@ -1,5 +1,4 @@
 package edu.uw.ischool.hluo5.quizdroid
-
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
@@ -57,7 +56,6 @@ class QuestionActivity : AppCompatActivity() {
             val selectedAnswerId = radioGroup.checkedRadioButtonId
             val selectedAnswer = findViewById<RadioButton>(selectedAnswerId).text.toString()
 
-
             val intent = Intent(this, AnswerActivity::class.java)
             intent.putExtra("selectedAnswer", selectedAnswer)
             intent.putExtra("correctAnswer", correctAnswer)
@@ -69,7 +67,15 @@ class QuestionActivity : AppCompatActivity() {
 
             finish()
         }
+
+        // 实现返回按钮功能
+        val backButton = findViewById<Button>(R.id.back_button)
+        backButton.setOnClickListener {
+            handleBackButtonPress()
+        }
     }
+
+
 
     private fun loadQuestion() {
         val questionText = findViewById<TextView>(R.id.question_text)
@@ -88,6 +94,23 @@ class QuestionActivity : AppCompatActivity() {
         val allOptions = (incorrectOptions + answer).shuffled()
         options.forEachIndexed { index, radioButton ->
             radioButton.text = allOptions[index]
+        }
+    }
+
+    private fun handleBackButtonPress() {
+        if (currentQuestionIndex == 0) {
+            // 如果是第一个问题，则返回到 MainActivity（话题列表页面）
+            val intent = Intent(this, MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            startActivity(intent)
+            finish()
+        } else {
+            // 否则返回到上一个问题
+            currentQuestionIndex--
+            loadQuestion()
+            val radioGroup = findViewById<RadioGroup>(R.id.radio_group)
+            radioGroup.clearCheck()
+            findViewById<Button>(R.id.submit_button).isEnabled = false
         }
     }
 }

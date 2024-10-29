@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- 显示用户选择的答案 -->
+    <TextView
+        android:id="@+id/selected_answer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Your Answer: "
+        android:textSize="18sp"
+        android:layout_marginBottom="8dp" />
+
+    <!-- 显示正确答案 -->
+    <TextView
+        android:id="@+id/correct_answer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Correct Answer: "
+        android:textSize="18sp"
+        android:layout_marginBottom="8dp" />
+
+    <!-- 显示当前答题的正确/错误统计 -->
+    <TextView
+        android:id="@+id/score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Score: "
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp" />
+
+    <!-- 下一题或完成按钮 -->
+    <Button
+        android:id="@+id/next_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Next" />
+</LinearLayout>

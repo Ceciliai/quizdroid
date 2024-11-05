@@ -5,13 +5,15 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
+
 class TopicRepositoryTest {
 
     private lateinit var repository: TopicRepository
 
     @Before
     fun setUp() {
-        repository = InMemoryTopicRepository() // 使用您的实际实现
+        // 初始化 InMemoryTopicRepository 实例
+        repository = InMemoryTopicRepository()
     }
 
     @Test
@@ -57,9 +59,9 @@ class TopicRepositoryTest {
         val topics = repository.getTopics()
         for (topic in topics) {
             for (question in topic.questions) {
-                assertTrue("Each question should have at least one answer option", question.options.isNotEmpty())
+                assertTrue("Each question should have at least one answer option", question.answers.isNotEmpty())
                 assertTrue("Correct answer index should be within options range",
-                    question.correctAnswerIndex in question.options.indices)
+                    question.correctAnswerIndex in question.answers.indices)
             }
         }
     }

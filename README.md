@@ -60,7 +60,6 @@ As a user on the question page, if I hit the "back" button it should NOT take me
 As a user on the first question page of a topic, hitting "back" should take me back to the topic list page, not the topic overview page. (1 pt)
 
 ------------------------------------------------------------------
-# quizdroid
 
 **QuizDroid: Repository**
 **QuizDroid (Domain Models/Repository)**

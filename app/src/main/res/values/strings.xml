@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">QuizDroid</string>
+    <string name="topic_icon_desc">Topic Icon</string>
 </resources>

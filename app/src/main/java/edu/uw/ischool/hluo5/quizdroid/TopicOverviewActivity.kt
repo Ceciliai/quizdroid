@@ -27,6 +27,7 @@ class TopicOverviewActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.question_count).text = "Total Questions: $questionCount"
 
 
+
         val beginButton = findViewById<Button>(R.id.begin_button)
         beginButton.setOnClickListener {
 

@@ -12,7 +12,7 @@ class TopicRepositoryTest {
 
     @Before
     fun setUp() {
-        // 初始化 InMemoryTopicRepository 实例
+
         repository = InMemoryTopicRepository()
     }
 
@@ -31,19 +31,19 @@ class TopicRepositoryTest {
         assertEquals("Math", mathTopic.title)
         assertEquals("Math quizzes", mathTopic.shortDescription)
         assertEquals("A variety of math-related questions", mathTopic.longDescription)
-        assertEquals("Math topic should have 2 questions", 2, mathTopic.questions.size)
+        assertEquals("Math topic should have 3 questions", 3, mathTopic.questions.size)
 
         val physicsTopic = topics[1]
         assertEquals("Physics", physicsTopic.title)
         assertEquals("Physics quizzes", physicsTopic.shortDescription)
         assertEquals("Physics-related questions to challenge your understanding", physicsTopic.longDescription)
-        assertEquals("Physics topic should have 2 questions", 2, physicsTopic.questions.size)
+        assertEquals("Physics topic should have 3 questions", 3, physicsTopic.questions.size)
 
         val marvelTopic = topics[2]
         assertEquals("Marvel Super Heroes", marvelTopic.title)
         assertEquals("Marvel Universe Trivia", marvelTopic.shortDescription)
         assertEquals("Test your knowledge about Marvel superheroes", marvelTopic.longDescription)
-        assertEquals("Marvel Super Heroes topic should have 2 questions", 2, marvelTopic.questions.size)
+        assertEquals("Marvel Super Heroes topic should have 3 questions", 3, marvelTopic.questions.size)
     }
 
     @Test

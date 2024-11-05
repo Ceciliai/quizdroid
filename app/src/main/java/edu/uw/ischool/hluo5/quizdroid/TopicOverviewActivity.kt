@@ -3,6 +3,7 @@ package edu.uw.ischool.hluo5.quizdroid
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
@@ -16,6 +17,8 @@ class TopicOverviewActivity : AppCompatActivity() {
 
 
         val topic = intent.getStringExtra("topic") ?: "Unknown Topic"
+        Log.d("TopicOverviewActivity", "Received topic: $topic")
+
         val description = "$topic is an interesting topic to explore."
         val questionCount = 3
 
@@ -26,8 +29,10 @@ class TopicOverviewActivity : AppCompatActivity() {
 
         val beginButton = findViewById<Button>(R.id.begin_button)
         beginButton.setOnClickListener {
+
             val intent = Intent(this, QuestionActivity::class.java)
             intent.putExtra("topic", topic)
+            Log.d("TopicOverviewActivity", "Starting quiz for topic: $topic")
             startActivity(intent)
         }
     }

@@ -10,7 +10,6 @@ import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.util.Log
 
-
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,21 +22,28 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        val topics = listOf("Math", "Physics", "Marvel Super Heroes")
+        // 获取 QuizApp 实例并从中访问 TopicRepository
+        val quizApp = application as QuizApp
+        val topics = quizApp.topicRepository.getTopics()  // 从 TopicRepository 获取主题列表
+
+        // 将 Topic 列表的标题提取出来
+        val topicTitles = topics.map { it.title }
+
+        // 使用 ArrayAdapter 显示从 TopicRepository 获取的主题标题
         val listView = findViewById<ListView>(R.id.topic_list_view)
-
-
-        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, topics)
+        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, topicTitles)
         listView.adapter = adapter
 
-
+        // 设置点击事件监听器
         listView.setOnItemClickListener { _, _, position, _ ->
-            val topic = topics[position]
-            Log.d("MainActivity", "Selected topic: $topic")
+            val selectedTopic = topics[position]
+            Log.d("MainActivity", "Selected topic: ${selectedTopic.title}")
+
+            // 创建 Intent 并传递选定主题的详细信息
             val intent = Intent(this, TopicOverviewActivity::class.java)
-            intent.putExtra("topic", topic)
+            intent.putExtra("topic", selectedTopic.title)
+            intent.putExtra("description", selectedTopic.longDescription)
             startActivity(intent)
         }
-
     }
 }

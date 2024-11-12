@@ -26,24 +26,48 @@ class PreferencesActivity : AppCompatActivity() {
         checkFrequencyEditText = findViewById(R.id.checkFrequencyEditText)
         saveButton = findViewById(R.id.saveButton)
 
-        urlEditText.setText(sharedPreferences.getString("data_url", "http://tednewardsandbox.site44.com/questions.json"))
-        checkFrequencyEditText.setText(sharedPreferences.getInt("check_frequency", 60).toString())
+        // Load current preferences and set default values if not set already
+        val savedUrl = sharedPreferences.getString("data_url", "http://tednewardsandbox.site44.com/questions.json")
+        val savedFrequency = sharedPreferences.getInt("check_frequency", 60)
+        urlEditText.setText(savedUrl)
+        checkFrequencyEditText.setText(savedFrequency.toString())
+
+        Log.d("PreferencesActivity", "Loaded preferences - data_url: $savedUrl, check_frequency: $savedFrequency")
 
         saveButton.setOnClickListener {
             val url = urlEditText.text.toString()
             val frequency = checkFrequencyEditText.text.toString().toIntOrNull() ?: 60
 
+            // Save new URL and frequency to SharedPreferences
             with(sharedPreferences.edit()) {
                 putString("data_url", url)
                 putInt("check_frequency", frequency)
                 apply()
             }
 
-            // 输出保存的设置值
-            Log.d("PreferencesActivity", "Saved data_url: $url")
-            Log.d("PreferencesActivity", "Saved check_frequency: $frequency")
+            Log.d("PreferencesActivity", "Saved new preferences - data_url: $url, check_frequency: $frequency")
 
+            // Start downloading the JSON file with the new URL
+            val repository = JsonTopicRepository(this) { newTopics ->
+                runOnUiThread {
+                    // 在这里处理新的数据，例如更新UI
+                    updateUI(newTopics)
+                }
+            }
+            Log.d("PreferencesActivity", "Starting download of JSON file from URL: $url")
+
+            repository.downloadJsonFile(url)
+
+            Log.d("PreferencesActivity", "Download initiated for JSON file from URL: $url")
+
+            // Finish the activity and return to the previous screen
             finish()
+            Log.d("PreferencesActivity", "Preferences activity finished and closed")
         }
+    }
+
+    private fun updateUI(newTopics: List<Topic>) {
+        // 这里是你的 UI 更新逻辑，比如刷新 ListView 或者 RecyclerView 等
+        Log.d("PreferencesActivity", "UI updated with new topics, number of topics: ${newTopics.size}")
     }
 }

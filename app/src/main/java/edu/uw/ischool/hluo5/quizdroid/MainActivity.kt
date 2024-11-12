@@ -7,78 +7,101 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.ArrayAdapter
 import android.widget.ListView
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var listViewAdapter: ArrayAdapter<String>
+    private var topics = mutableListOf<Topic>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_main)
+        Log.d("MainActivity", "MainActivity started")
 
-        // Set up the toolbar as the app's action bar
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
+        Log.d("MainActivity", "Toolbar set up successfully")
 
-        // Apply padding to handle system bars (for edge-to-edge display)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            Log.d("MainActivity", "Applied system bar insets for edge-to-edge display")
             insets
         }
 
-        // Use JsonTopicRepository to load topics from JSON
-        val repository: TopicRepository = JsonTopicRepository(this)
-        val topics = repository.getTopics()  // Get list of topics from JsonTopicRepository
-
-        // Log each topic and its questions to verify loading
-        topics.forEach { topic ->
-            Log.d("MainActivity", "Title: ${topic.title}, Short Description: ${topic.shortDescription}, Long Description: ${topic.longDescription}")
-            topic.questions.forEach { question ->
-                Log.d("MainActivity", "Question: ${question.questionText}, Answers: ${question.answers}")
-            }
-        }
-
-        // Extract titles from the topics list
-        val topicTitles = topics.map { it.title }
-
-        // Set up ListView with the topic titles
+        // 初始化 ListView 和适配器
         val listView = findViewById<ListView>(R.id.topic_list_view)
-        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, topicTitles)
-        listView.adapter = adapter
+        listViewAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, topics.map { it.title })
+        listView.adapter = listViewAdapter
 
-        // Set click listener for ListView items
         listView.setOnItemClickListener { _, _, position, _ ->
             val selectedTopic = topics[position]
-            Log.d("MainActivity", "Selected topic: ${selectedTopic.title}")
+            Log.d("MainActivity", "User selected topic: ${selectedTopic.title}")
 
-            // Create an Intent to start TopicOverviewActivity, passing selected topic details
-            val intent = Intent(this, TopicOverviewActivity::class.java)
-            intent.putExtra("topic", selectedTopic.title)
-            intent.putExtra("questions", ArrayList(selectedTopic.questions)) // Pass the list of questions as ArrayList
+            val intent = Intent(this, TopicOverviewActivity::class.java).apply {
+                putExtra("topic", selectedTopic.title)
+                putExtra("questions", ArrayList(selectedTopic.questions))
+            }
+            Log.d("MainActivity", "Starting TopicOverviewActivity with topic: ${selectedTopic.title}")
             startActivity(intent)
+        }
+
+        // 加载数据
+        loadTopics()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // 确保返回到 MainActivity 后更新数据
+        loadTopics()
+    }
+
+    private fun loadTopics() {
+        val repository = JsonTopicRepository(this) { newTopics ->
+            runOnUiThread {
+                updateUI(newTopics)
+            }
+        }
+        val sharedPreferences = getSharedPreferences("QuizDroidPrefs", MODE_PRIVATE)
+        val url = sharedPreferences.getString("data_url", "http://tednewardsandbox.site44.com/questions.json")
+        Log.d("MainActivity", "Loading topics from URL: $url")
+        url?.let {
+            repository.downloadJsonFile(it)
         }
     }
 
-    // Inflate the options menu
+    private fun updateUI(newTopics: List<Topic>) {
+        topics.clear()
+        topics.addAll(newTopics)
+
+        // 更新适配器的数据
+        listViewAdapter.clear()
+        listViewAdapter.addAll(topics.map { it.title })
+        listViewAdapter.notifyDataSetChanged()
+        Log.d("MainActivity", "UI updated with new topics, number of topics: ${newTopics.size}")
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
+        Log.d("MainActivity", "Options menu created")
         return true
     }
 
-    // Handle menu item selection
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_preferences -> {
-                // Start PreferencesActivity when "Preferences" menu item is selected
+                Log.d("MainActivity", "Preferences menu item selected")
                 val intent = Intent(this, PreferencesActivity::class.java)
                 startActivity(intent)
                 true
             }
             else -> super.onOptionsItemSelected(item)
+        }.also {
+            Log.d("MainActivity", "Options item selected: ${item.title}")
         }
     }
 }

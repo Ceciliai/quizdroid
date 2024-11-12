@@ -22,9 +22,17 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        // 获取 QuizApp 实例并从中访问 TopicRepository
-        val quizApp = application as QuizApp
-        val topics = quizApp.topicRepository.getTopics()  // 从 TopicRepository 获取主题列表
+        // 使用 JsonTopicRepository 从 JSON 文件加载题目数据
+        val repository: TopicRepository = JsonTopicRepository(this)
+        val topics = repository.getTopics()  // 从 JsonTopicRepository 获取主题列表
+
+        // 日志输出每个主题及其问题，检查是否正确加载
+        topics.forEach { topic ->
+            Log.d("MainActivity", "Title: ${topic.title}, Short Description: ${topic.shortDescription}, Long Description: ${topic.longDescription}")
+            topic.questions.forEach { question ->
+                Log.d("MainActivity", "Question: ${question.questionText}, Answers: ${question.answers}")
+            }
+        }
 
         // 将 Topic 列表的标题提取出来
         val topicTitles = topics.map { it.title }
@@ -39,10 +47,10 @@ class MainActivity : AppCompatActivity() {
             val selectedTopic = topics[position]
             Log.d("MainActivity", "Selected topic: ${selectedTopic.title}")
 
-            // 创建 Intent 并传递选定主题的详细信息
+            // 创建一个 Intent，并传递所选主题的详细信息，包括问题列表
             val intent = Intent(this, TopicOverviewActivity::class.java)
             intent.putExtra("topic", selectedTopic.title)
-            intent.putExtra("description", selectedTopic.longDescription)
+            intent.putExtra("questions", ArrayList(selectedTopic.questions)) // 将问题列表作为 ArrayList 传递
             startActivity(intent)
         }
     }

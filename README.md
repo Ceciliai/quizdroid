@@ -59,7 +59,14 @@ As a user on the question page, if I hit the "back" button it should NOT take me
 
 As a user on the first question page of a topic, hitting "back" should take me back to the topic list page, not the topic overview page. (1 pt)
 
+
 ------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------
+
+
 
 **QuizDroid: Repository**
 **QuizDroid (Domain Models/Repository)**
@@ -112,6 +119,13 @@ Create some unit tests that test the TopicRepository (2 pts)
 Refactor the domain model so that Topics can have an icon to go along with the title and descriptions. (Use the stock Android icon for now if you don't want to test your drawing skills.) Refactor the topic list view to use the icon as part of the layout for each item in the list view. Display the icon on the topic overview page. (2pts)
 
 -----------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------------
+
+
+
+
 **QuizDroid (Storage)**
 An application that will allow users to take multiple-choice quizzes
 

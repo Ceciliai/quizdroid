@@ -30,6 +30,9 @@
         <activity
             android:name=".AnswerActivity"
             android:exported="false" />
+        <activity android:name=".PreferencesActivity"
+            android:label="Preferences" />
+
 
     </application>
 </manifest>

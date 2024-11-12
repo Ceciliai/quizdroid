@@ -1,14 +1,17 @@
 package edu.uw.ischool.hluo5.quizdroid
 
-import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import android.content.Intent
+import android.os.Bundle
+import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.ArrayAdapter
 import android.widget.ListView
-import android.util.Log
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -16,17 +19,22 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
 
+        // Set up the toolbar as the app's action bar
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+
+        // Apply padding to handle system bars (for edge-to-edge display)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        // 使用 JsonTopicRepository 从 JSON 文件加载题目数据
+        // Use JsonTopicRepository to load topics from JSON
         val repository: TopicRepository = JsonTopicRepository(this)
-        val topics = repository.getTopics()  // 从 JsonTopicRepository 获取主题列表
+        val topics = repository.getTopics()  // Get list of topics from JsonTopicRepository
 
-        // 日志输出每个主题及其问题，检查是否正确加载
+        // Log each topic and its questions to verify loading
         topics.forEach { topic ->
             Log.d("MainActivity", "Title: ${topic.title}, Short Description: ${topic.shortDescription}, Long Description: ${topic.longDescription}")
             topic.questions.forEach { question ->
@@ -34,24 +42,43 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // 将 Topic 列表的标题提取出来
+        // Extract titles from the topics list
         val topicTitles = topics.map { it.title }
 
-        // 使用 ArrayAdapter 显示从 TopicRepository 获取的主题标题
+        // Set up ListView with the topic titles
         val listView = findViewById<ListView>(R.id.topic_list_view)
         val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, topicTitles)
         listView.adapter = adapter
 
-        // 设置点击事件监听器
+        // Set click listener for ListView items
         listView.setOnItemClickListener { _, _, position, _ ->
             val selectedTopic = topics[position]
             Log.d("MainActivity", "Selected topic: ${selectedTopic.title}")
 
-            // 创建一个 Intent，并传递所选主题的详细信息，包括问题列表
+            // Create an Intent to start TopicOverviewActivity, passing selected topic details
             val intent = Intent(this, TopicOverviewActivity::class.java)
             intent.putExtra("topic", selectedTopic.title)
-            intent.putExtra("questions", ArrayList(selectedTopic.questions)) // 将问题列表作为 ArrayList 传递
+            intent.putExtra("questions", ArrayList(selectedTopic.questions)) // Pass the list of questions as ArrayList
             startActivity(intent)
+        }
+    }
+
+    // Inflate the options menu
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    // Handle menu item selection
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_preferences -> {
+                // Start PreferencesActivity when "Preferences" menu item is selected
+                val intent = Intent(this, PreferencesActivity::class.java)
+                startActivity(intent)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 }

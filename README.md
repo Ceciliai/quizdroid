@@ -1,30 +1,28 @@
-**QuizDroid (Storage)**
+**QuizDroid (Network)**
 An application that will allow users to take multiple-choice quizzes
 
-now we will write the code to check the questions periodically, store the data, and allow for preferences
+now we will download the topics and questions from a server
 
------------------------
+
+
 **Tasks:**
-Refactor the TopicRepository to read a local JSON file (data/questions.json) to use as the source of the Topics and Questions. Use a hard-coded file (available at http://tednewardsandbox.site44.com/questions.json) stored on the device for now
 
-The application should provide a "Preferences" action bar item that brings up a "Preferences" activity containing the application's configurable settings: URL to use for question data, and how often to check for new downloads measured in minutes. If a download is currently under way, these settings should not take effect until the next download starts.
+When the application fires up, it should, as a background operation, attempt to download a JSON file containing the questions from the server. (This doesn't need to happen more than once, when the app starts up.) For now, pop a Toast message displaying the URL that will eventually be hit. Make sure this URL is what's defined in the Preferences.
 
----------------------------------------
-**Implementation Notes**
-keep in mind in the next part, you're going to download that JSON file, so make sure that your code to open the file is flexible enough to read from a different location on the device
+The background operation should now attempt to download the JSON file specified in the Preferences URL. Save this data to a local file as questions.json. Make sure that this file always remains in a good state--if the download fails or is interrupted, the previous file should remain in place.
 
-putting the file into the "assets" folder of the Android Studio project is easy, but can't be overwritten by what's downloaded
+If I am currently offline (in Airplane mode or in a no-bars area) the application should display a message telling me I have no access to the Internet. If I am in airplane mode, it should ask if I want to turn airplane mode off and take me to the Settings activity to do so. If I simply have no signal, it should just punt gracefully with a nice error message.
 
---------------------------------------
+If the download of the questions fails, the application should tell me and ask if I want to retry or quit the application and try again later.
+
 **Grading (5 pts)**
-repo should be called 'quizdroid' on branch 'storage'
+repo should be called 'quizdroid' on branch 'network'
 
-3 pts: TopicRepository pulls all data from a JSON file
+2 pts: file is downloaded
 
-2 pts: Preferences displays configuration
+2 pts: detect network signal/online access and display message if necessary
+
+1 pt: display retry dialog
 
 **Extra Credit (2 pts)**
-use a custom JSON file of your own with your own questions; if you do this, submit screenshots using your questions. Include the URL at which your JSON file can be found (it must be Internet-accessible) so we can verify it. It must match the structure/format of the example. (2 pts)
-
--------------------------------------------
-
+provide some kind of notification to the user that downloading the JSON file is being attempted (1 pt)
